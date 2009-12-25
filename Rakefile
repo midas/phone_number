@@ -9,7 +9,8 @@ begin
     gem.description = %Q{Encapsulates the composed of pattern for phone numbers into any easy to use library.}
     gem.email = "jason@lookforwardenterprises.com"
     gem.homepage = "http://github.com/midas/phone_number"
-    gem.authors = ["Jason Harrelson"]
+    gem.authors = ["C. Jason Harrelson (midas)"]
+    gem.add_dependency "activerecord", ">= 2.3"
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

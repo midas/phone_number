@@ -6,11 +6,9 @@ class PhoneNumberMigrationGenerator < Rails::Generator::NamedBase
   end
   
   def manifest
-    file_name = "#{@table.uppercase}HavePhoneNumbers"
-
     record do |m|
       m.directory "db/migrate"
-      m.template  "migration.rb", "db/migrate/#{@stamp}_#{file_name.underscore}.rb"
+      m.template  "migration.rb", "db/migrate/#{@stamp}_#{name}.rb", :assigns => { :table => @table, :field => @field }
     end
   end
 
