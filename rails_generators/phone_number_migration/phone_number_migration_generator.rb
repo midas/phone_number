@@ -1,7 +1,7 @@
 class PhoneNumberMigrationGenerator < Rails::Generator::NamedBase
   def initialize( runtime_args, runtime_options={} )
     super
-    @stamp = DateTime.now.strftime( "%Y%m%d%H%M%S" )
+    @stamp = DateTime.now.utc.strftime( "%Y%m%d%H%M%S" )
     parse_args( args )
   end
   
