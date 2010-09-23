@@ -1,6 +1,6 @@
 = phone_number
 
-http://github.com/midas/guilded
+http://github.com/midas/phone_number
 
 == DESCRIPTION
 

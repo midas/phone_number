@@ -1,17 +1,17 @@
 module PhoneNumber
   class Number
-    MATCH_REGEX = /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/
-
+    REGEX = /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/
+    INVALID_MESSAGE = "invalid format, try something like: 111-111-1111"
     attr_reader :country_code, :area_code, :subscriber_number_prefix, :subscriber_number_postfix, :extension
 
     def initialize( number )
-      if number.is_a?( String ) && m = number.match( /^(\d{1,2})(\d{3})(\d{3})(\d{4})x?(\d*)$/ )
+      if number.is_a?( String ) && m = number.match( REGEX )
         @country_code, @area_code, @subscriber_number_prefix, @subscriber_number_postfix, @extension = m[1], m[2], m[3], m[4], m[5]
       elsif number.is_a?( Hash )
         @country_code, @area_code, @subscriber_number_prefix, @subscriber_number_postfix, @extension = number[:country_code], number[:area_code], number[:subscriber_number_prefix], number[:subscriber_number_postfix], number[:extension]
       end
 
-      @@pattern_map = {
+      @pattern_map = {
         /%c/ => (@country_code || '').gsub( /0/, '' ) || "",
         /%C/ => @country_code || "",
         /%a/ => @area_code || "",
@@ -31,12 +31,14 @@ module PhoneNumber
 
     def self.parse( number )
       number.gsub!( / x /, 'x' )
-      if m = number.match( MATCH_REGEX )
+      if m = number.match( REGEX )
         cntry_cd = m[1].size == 2 ? m[1] : "0#{m[1]}"
         cntry_cd = '01' if cntry_cd.nil? || cntry_cd.empty? || cntry_cd == '0'
-        Number.new( :country_code => cntry_cd, :area_code => m[2], :subscriber_number_prefix => m[3], :subscriber_number_postfix => m[4],
-                    :extension => m[5] )
+        return Number.new( :country_code => cntry_cd, :area_code => m[2], :subscriber_number_prefix => m[3],
+                           :subscriber_number_postfix => m[4], :extension => m[5] )
       end
+
+      Number.new( {} )
     end
 
     def empty?
@@ -56,7 +58,7 @@ module PhoneNumber
       return '' if self.empty?
       to_return = pattern.is_a?( Symbol ) ? @@patterns[pattern] : pattern
       to_return = @@patterns[:us_short] if to_return.empty?
-      @@pattern_map.each { |pat, replacement| to_return = to_return.gsub( pat, replacement ) }
+      @pattern_map.each { |pat, replacement| to_return = to_return.gsub( pat, replacement ) }
       to_return.strip
     end
 

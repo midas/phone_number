@@ -1,10 +1,10 @@
-require File.expand_path( File.dirname(__FILE__) + '/../spec_helper' )
+require 'spec_helper'
 require File.expand_path( File.dirname(__FILE__) + '/number_parsing_shared_spec' )
 
 
 describe "PhoneNumber::Number" do
   it "should agree that the MATCH_REGEX is /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/" do
-    PhoneNumber::Number::MATCH_REGEX.should == /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/
+    PhoneNumber::Number::REGEX.should == /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/
   end
 
   describe "when initializing from a raw string with an extension" do
