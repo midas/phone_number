@@ -1,5 +1,7 @@
 module PhoneNumber
   class Number
+    MATCH_REGEX = /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/
+
     attr_reader :country_code, :area_code, :subscriber_number_prefix, :subscriber_number_postfix, :extension
 
     def initialize( number )
@@ -10,18 +12,18 @@ module PhoneNumber
       end
 
       @@pattern_map = {
-              /%c/ => (@country_code || '').gsub( /0/, '' ) || "",
-              /%C/ => @country_code || "",
-              /%a/ => @area_code || "",
-              /%m/ => @subscriber_number_prefix || "",
-              /%p/ => @subscriber_number_postfix || "",
-              /%x/ => @extension || ""
+        /%c/ => (@country_code || '').gsub( /0/, '' ) || "",
+        /%C/ => @country_code || "",
+        /%a/ => @area_code || "",
+        /%m/ => @subscriber_number_prefix || "",
+        /%p/ => @subscriber_number_postfix || "",
+        /%x/ => @extension || ""
       }
 
       @@patterns = {
-              :us => "%c (%a) %m-%p x %x",
-              :us_short => "(%a) %m-%p",
-              :nanp_short => "(%a) %m-%p"
+        :us => "%c (%a) %m-%p x %x",
+        :us_short => "(%a) %m-%p",
+        :nanp_short => "(%a) %m-%p"
       }
 
       self.freeze
@@ -29,7 +31,7 @@ module PhoneNumber
 
     def self.parse( number )
       number.gsub!( / x /, 'x' )
-      if m = number.match( /^\+?(\d{0,2})[ \.\-]?\(?(\d{3})\)?[ \.\-]?(\d{3})[ \.\-]?(\d{4})[ x]?(\d*)$/ )
+      if m = number.match( MATCH_REGEX )
         cntry_cd = m[1].size == 2 ? m[1] : "0#{m[1]}"
         cntry_cd = '01' if cntry_cd.nil? || cntry_cd.empty? || cntry_cd == '0'
         Number.new( :country_code => cntry_cd, :area_code => m[2], :subscriber_number_prefix => m[3], :subscriber_number_postfix => m[4],
@@ -61,8 +63,6 @@ module PhoneNumber
     def self.convert( number )
       parse( number )
     end
-
-    private
 
     def raw
       ext = (@extension.nil? || @extension.empty?) ? "" : "x#{@extension}"
