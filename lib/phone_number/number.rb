@@ -46,6 +46,13 @@ module PhoneNumber
               (@subscriber_number_postfix.nil? || @subscriber_number_postfix.empty?) && (@extension.nil? || @extension.empty?)
     end
 
+    def ==( other )
+      return false unless other.instance_of?( self.class )
+      return false unless other.raw == raw
+
+      true
+    end
+
     # Creates a phone number based on pattern provided.  Defaults to US (NANP) formatting (111) 111-1111.
     #
     # Symbols:
